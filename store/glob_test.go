@@ -20,6 +20,8 @@ var globs = [][]string{
 	{"/*a*/b", `^/[^/]*a[^/]*/b$`},
 	{"/**", `^/.*$`},
 	{"/**/a", `^/.*/a$`},
+	{"/a|/b", "^(/a|/b)$"},
+	{"/a/**/b/*|/c", "^(/a/.*/b/[^/]*|/c)$"},
 }
 
 var matches = [][]string{
@@ -27,6 +29,7 @@ var matches = [][]string{
 	{"/a?", "/ab", "/ac"},
 	{"/a*", "/a", "/ab", "/abc"},
 	{"/a**", "/a", "/ab", "/abc", "/a/", "/a/b", "/ab/c"},
+	{"/a/*/b|/c/*/d", "/a/qwer/b", "/a/uiop/b", "/c/qwer/d", "/c/uiop/d"},
 }
 
 var nonMatches = [][]string{
@@ -34,6 +37,7 @@ var nonMatches = [][]string{
 	{"/a?", "/", "/abc", "/a", "/a/"},
 	{"/a*", "/", "/a/", "/ba"},
 	{"/a**", "/", "/ba"},
+	{"/a/*/b|/c/*/d", "/a/qwer/d", "/a", "/d", "/a/qwer/b|", "|/c/uiop/d"},
 }
 
 var dontCompile = []string{
@@ -52,6 +56,9 @@ var dontCompile = []string{
 	"/a(b",
 	"/a)b",
 	"/a世界",
+	"/a|",
+	"/a|/b|",
+	"|/a|/b",
 }
 
 func TestGlobTranslateOk(t *testing.T) {

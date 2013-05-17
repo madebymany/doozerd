@@ -19,21 +19,27 @@ type Glob struct {
 	r       *regexp.Regexp // compiled regexp
 }
 
-var globRe = mustBuildRe(`(` + charPat + `|[\*\?])`)
+var globRePart = `/(` + charPat + `|[\*\?])+`
+var globRe = regexp.MustCompile(`^/$|^((` + globRePart + `)+\|)*(` + globRePart + `)+$`)
 
 // Supports unix/ruby-style glob patterns:
 //  - `?` matches a single char in a single path component
 //  - `*` matches zero or more chars in a single path component
 //  - `**` matches zero or more chars in zero or more components
+//  - `|` allows for alternate paths to be matched
 func translateGlob(pat string) (string, error) {
 	if !globRe.MatchString(pat) {
 		return "", GlobError(pat)
 	}
 
 	outs := make([]string, len(pat))
+	groupPattern := false
 	i, double := 0, false
 	for _, c := range pat {
 		switch c {
+		case '|':
+			groupPattern = true
+			fallthrough
 		default:
 			outs[i] = string(c)
 			double = false
@@ -54,8 +60,14 @@ func translateGlob(pat string) (string, error) {
 		i++
 	}
 	outs = outs[0:i]
+	outPat := strings.Join(outs, "")
+	if groupPattern {
+		/* We have to group the entire pattern when using alternation because
+		 * otherwise the pipe matches a literal pipe */
+		outPat = "(" + outPat + ")"
+	}
 
-	return "^" + strings.Join(outs, "") + "$", nil
+	return "^" + outPat + "$", nil
 }
 
 // CompileGlob translates pat into a form more convenient for
