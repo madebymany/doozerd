@@ -3,8 +3,8 @@ package server
 import (
 	"code.google.com/p/goprotobuf/proto"
 	"encoding/binary"
-	"github.com/ha/doozerd/consensus"
-	"github.com/ha/doozerd/store"
+	"github.com/madebymany/doozerd/consensus"
+	"github.com/madebymany/doozerd/store"
 	"io"
 	"log"
 	"sync"

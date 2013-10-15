@@ -1,8 +1,8 @@
 package peer
 
 import (
-	"github.com/ha/doozer"
-	"github.com/ha/doozerd/store"
+	"github.com/madebymany/doozer"
+	"github.com/madebymany/doozerd/store"
 	"testing"
 )
 

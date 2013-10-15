@@ -1,8 +1,8 @@
 package server
 
 import (
-	"github.com/ha/doozerd/consensus"
-	"github.com/ha/doozerd/store"
+	"github.com/madebymany/doozerd/consensus"
+	"github.com/madebymany/doozerd/store"
 	"log"
 	"net"
 	"syscall"
